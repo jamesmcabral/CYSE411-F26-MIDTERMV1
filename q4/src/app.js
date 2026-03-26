@@ -73,9 +73,19 @@ function renderProfile(profile) {
 -------------------------- */
 
 function saveSession() {
-    localStorage.setItem("profile", JSON.stringify(currentProfile));
+    
+    if (!currentProfile) return;
 
-    alert("Session saved");
+    // Only store expected fields
+    const safeProfile = {username: currentProfile.username, notifications: currentProfile.notifications};
+
+    try {
+        localStorage.setItem("profile", JSON.stringify(safeProfile));
+        alert("Session saved");
+    } catch (e) {
+        console.error("Failed to save session:", e);
+        alert("Unable to save session safely.");
+    }
 }
 
 
@@ -83,12 +93,28 @@ function loadSession() {
 
     const stored = localStorage.getItem("profile");
 
-    if (stored) {
+    if (!stored) return;
 
-        const profile = JSON.parse(stored);
+    let profile;
+    try {
+        profile = JSON.parse(stored);
 
-        currentProfile = profile;
+        // Validate required fields
+        if (!profile || typeof profile.username !== "string" || !Array.isArray(profile.notifications)) {
+            console.warn("Stored session is invalid or corrupted.");
+            alert("Stored session is invalid.");
+            return;
+        }
 
-        renderProfile(profile);
+        // Keep only expected fields
+        profile = {username: profile.username, notifications: profile.notifications};
+
+    } catch (e) {
+        console.error("Failed to parse stored session:", e);
+        alert("Stored session is corrupted.");
+        return;
     }
+
+    currentProfile = profile;
+    renderProfile(profile);
 }
