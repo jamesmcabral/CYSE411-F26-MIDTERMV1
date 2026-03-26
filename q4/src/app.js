@@ -28,7 +28,7 @@ function loadProfile() {
         // Validate required fields
         if (!profile || typeof profile.username !== "string" || !Array.isArray(profile.notifications)) {
             console.warn("Invalid profile data.");
-            alert("Failed load to load profile: Invalid data input.");
+            alert("Failed to load profile: invalid input.");
             return;
         }
 
