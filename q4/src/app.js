@@ -51,20 +51,18 @@ function loadProfile() {
 -------------------------- */
 
 function renderProfile(profile) {
-
     
-    document.getElementById("username").innerHTML = profile.username;
+    // Safely render username
+    const usernameEl = document.getElementById("username");
+    usernameEl.textContent = profile.username;
 
+    // Safely render notifications
     const list = document.getElementById("notifications");
-    list.innerHTML = "";
+    list.innerHTML = ""; // Clear existing notifications
 
     for (let n of profile.notifications) {
-
         const li = document.createElement("li");
-
-        
-        li.innerHTML = n;
-
+        li.textContent = n; // Safe insertion
         list.appendChild(li);
     }
 }
