@@ -21,8 +21,24 @@ function loadProfile() {
 
     const text = document.getElementById("profileInput").value;
 
-   
-    const profile = JSON.parse(text);
+    let profile;
+    try {
+        profile = JSON.parse(text);
+
+        // Validate required fields
+        if (!profile || typeof profile.username !== "string" || !Array.isArray(profile.notifications)) {
+            console.warn("Invalid profile data.");
+            alert("Failed load to load profile: Invalid data input.");
+            return;
+        }
+
+        // Keep only expected fields
+        profile = {username: profile.username, notifications: profile.notifications};
+    } catch (e) {
+        console.error("Failed to parse JSON:", e);
+        alert("Failed to load profile: Invalid JSON.");
+        return;
+    }
 
     currentProfile = profile;
 
